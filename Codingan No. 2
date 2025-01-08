@@ -1,0 +1,25 @@
+#include <iostream>
+#include <unordered_set>
+#include <vector>
+using namespace std;
+
+void findPairs(vector<int>& arr1, vector<int>& arr2, int K) {
+    unordered_set<int> set;
+    for (int num : arr1)
+        set.insert(num);
+    
+    cout << "Pasangan yang jumlahnya sama dengan " << K << ":\n";
+    for (int num : arr2) {
+        if (set.find(K - num) != set.end())
+            cout << "(" << K - num << ", " << num << ")\n";
+    }
+}
+
+int main() {
+    vector<int> arr1 = {1, 2, 4, 5};
+    vector<int> arr2 = {6, 3, 7, 9};
+    int K = 10;
+    
+    findPairs(arr1, arr2, K);
+    return 0;
+}
