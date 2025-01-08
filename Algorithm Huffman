@@ -1,0 +1,71 @@
+#include <iostream>
+#include <queue>
+#include <unordered_map>
+using namespace std;
+
+// Node untuk pohon Huffman
+struct Node {
+    char ch;
+    int freq;
+    Node *left, *right;
+    Node(char c, int f) : ch(c), freq(f), left(nullptr), right(nullptr) {}
+};
+
+// Komparator untuk priority queue
+struct Compare {
+    bool operator()(Node* a, Node* b) {
+        return a->freq > b->freq;
+    }
+};
+
+// Fungsi untuk membangun pohon Huffman
+Node* buildHuffmanTree(unordered_map<char, int>& freqMap) {
+    priority_queue<Node*, vector<Node*>, Compare> pq;
+    for (auto pair : freqMap)
+        pq.push(new Node(pair.first, pair.second));
+    
+    while (pq.size() > 1) {
+        Node* left = pq.top(); pq.pop();
+        Node* right = pq.top(); pq.pop();
+        Node* parent = new Node('\0', left->freq + right->freq);
+        parent->left = left;
+        parent->right = right;
+        pq.push(parent);
+    }
+    return pq.top();
+}
+
+// Fungsi untuk membuat kode Huffman
+void generateCodes(Node* root, string code, unordered_map<char, string>& huffmanCodes) {
+    if (!root) return;
+    if (root->ch != '\0') huffmanCodes[root->ch] = code;
+    generateCodes(root->left, code + "0", huffmanCodes);
+    generateCodes(root->right, code + "1", huffmanCodes);
+}
+
+// Fungsi utama untuk encoding
+void huffmanEncoding(string text) {
+    unordered_map<char, int> freqMap;
+    for (char c : text) freqMap[c]++;
+    
+    Node* root = buildHuffmanTree(freqMap);
+    unordered_map<char, string> huffmanCodes;
+    generateCodes(root, "", huffmanCodes);
+    
+    cout << "Huffman Codes:\n";
+    for (auto pair : huffmanCodes)
+        cout << pair.first << ": " << pair.second << endl;
+
+    cout << "\nEncoded String:\n";
+    for (char c : text)
+        cout << huffmanCodes[c];
+    cout << endl;
+}
+
+int main() {
+    string text;
+    cout << "Masukkan string: ";
+    cin >> text;
+    huffmanEncoding(text);
+    return 0;
+}
