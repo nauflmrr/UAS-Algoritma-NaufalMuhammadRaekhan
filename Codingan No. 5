@@ -1,0 +1,19 @@
+#include <iostream>
+using namespace std;
+
+void sierpinski(int n) {
+    if (n == 0) {
+        cout << "*\n";
+        return;
+    }
+    sierpinski(n - 1);
+    for (int i = 0; i < (1 << n); i++)
+        cout << "*";
+    cout << "\n";
+}
+
+int main() {
+    int n = 3; // Tingkat kedalaman fractal
+    sierpinski(n);
+    return 0;
+}
